@@ -1,0 +1,133 @@
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  padding-top: 1em;
+  margin-bottom: 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.container {
+  width: auto;
+  padding: 0 10px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+#header{
+  margin-bottom: 0;
+}
+
+#header *{
+  margin-left: 2rem;
+}
+
+tbody tr:hover{
+  background-color: LightBlue   ;
+}
+
+td{
+	overflow:hidden;
+	word-wrap: break-word;
+}
+
+/* CSS used here will be applied after bootstrap.css */
+.list-group {
+  list-style: decimal inside;
+}
+
+.list-group-item {
+  display: list-item;
+}
+
+.panel-body{
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.imageupload{
+  padding-bottom: 1em;
+}
+
+[name='poll-question-wraper'] {
+  cursor:move;
+}
+
+[name="test-outcome-wraper"] tbody td .form-group {
+  margin-bottom: 0;
+}
+
+ol{
+  padding-left: 1em;
+}
+
+.well {
+  width:100%;
+}
+
+.question-image-container {
+height: 20em;
+text-align: center;
+}
+
+.answer-image-container {
+height: 15em;
+text-align: center;
+}
+
+/*And then change */
+  .container .img-responsive {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}  
+/*To */
+
+.container  .img-responsive {
+    display: block;
+    width: auto;
+    max-height: 100%;
+}
+
+.canvas-holder {
+  padding: 1em;
+  margin-bottom: 3em;
+  border-style: solid;
+  border-color: grey;
+  border-width:0.05em;
+  border-radius: 0.25em;
+}
+
+.form-group .alert-danger {
+  margin-bottom: 0;
+}
+
+ul.bs-autocomplete-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow: auto;
+  z-index: 9999;
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0px 1px 6px 1px rgba(0, 0, 0, 0.4);
+}
+
+.form-group .alert {
+  margin-top: 1em;
+}

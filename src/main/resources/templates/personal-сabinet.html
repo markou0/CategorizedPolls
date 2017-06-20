@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Personal Cabinet</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<link rel="stylesheet" href="../static/css/libs/bootstrap/bootstrap.min.css" th:href="@{/css/libs/bootstrap/bootstrap.min.css}"/>
+	<link rel="stylesheet" href="../static/css/plugins/jquery-ui/jquery-ui.css" th:href="@{/css/plugins/jquery-ui/jquery-ui.css}"/>
+	<link rel="stylesheet" href="../static/css/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" th:href="@{/css/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css}"/>
+	<link rel="stylesheet" href="../static/css/plugins/bootstrap-imageupload/bootstrap-imageupload.css" th:href="@{/css/plugins/bootstrap-imageupload/bootstrap-imageupload.css}"/>
+	<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+	<script src="../static/js/libs/jquery/jquery.min.js" th:src="@{/js/libs/jquery/jquery.min.js}"></script>
+	<script src="../static/js/libs/bootstrap/bootstrap.min.js" th:src="@{/js/libs/bootstrap/bootstrap.min.js}"></script>
+	<script src="../static/js/plugins/jquery-ui/jquery-ui.js" th:src="@{/js/plugins/jquery-ui/jquery-ui.js}"></script>
+	<script src="../static/js/libs/moment/moment.min.js" th:src="@{/js/libs/moment/moment.min.js}"></script>
+	<script src="../static/js/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js" th:src="@{/js/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+	<script src="../static/js/plugins/serializejson/jquery.serializejson.js" th:src="@{/js/plugins/serializejson/jquery.serializejson.js}"></script>
+	<script src="../static/js/plugins/bootstrap-imageupload/bootstrap-imageupload.min.js" th:src="@{/js/plugins/bootstrap-imageupload/bootstrap-imageupload.min.js}"></script>
+	<script src="../static/js/autocomplete.js" th:src="@{/js/autocomplete.js}"></script>
+	<div th:replace="fragments/header :: header-js-css"/>
+</head>
+<body th:with="isPersonelCabinet = ${#strings.contains(#httpServletRequest.requestURI,'personal-cabinet')}">
+	<div th:replace="fragments/header :: top-menu"/>
+	<div th:unless="${user}" id="pesonal-cabinet" class="container">
+	<p><div class="alert alert-danger">Non existent user!</div></p>
+	</div>
+	<div th:if="${user}" id="pesonal-cabinet" class="container">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="col-md-3">
+				<div id="avatar">
+					
+					<img th:src="@{/img/default-user-avatar.png}" src="../static/img/default-user-avatar.png" class="img-thumbnail" alt="Cinque Terre" width="304" height="500"/>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<p>
+							<span class="glyphicon glyphicon-user"></span> username : <strong class="pull-right" th:text="${user.name}"></strong>
+						</p> 
+						<p>
+							<span class="glyphicon glyphicon-envelope"></span> email : <strong class="pull-right" th:text="${user.email}"></strong>
+						</p> 
+						<p>
+							<span class="glyphicon glyphicon-education"></span> authorities : <strong class="pull-right" sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</strong>
+						</p> 
+					</div>
+					<div th:unless="${isPersonelCabinet}" class="panel-footer text-center">
+						<a sec:authorize="hasAuthority('ADMIN')" class="btn btn-danger" th:href="@{/user/{userId}/remove(userId=${user.id})}">Remove User</a>
+					</div>
+				</div>
+				<ul class="nav nav-pills nav-stacked well">
+					<li class="active"><a data-toggle="pill" href="#polls-lists">polls 
+						<span th:unless="${isPersonelCabinet}" th:text="${#lists.size(userPolls)}" class="badge">0</span>
+						<span th:if="${isPersonelCabinet}" th:text="${#lists.size(userPolls)+#lists.size(lastTakedPolls)+#lists.size(privatePolls)}" class="badge">0</span>
+					</a></li>
+					<li><a data-toggle="pill" href="#communties">communties 
+						<span th:unless="${isPersonelCabinet}" th:text="${#lists.size(userCommunities)}" class="badge">0</span>
+						<span th:if="${isPersonelCabinet}" th:text="${#lists.size(notAcceptedCommunities)+#lists.size(userCommunities)}" class="badge">0</span>
+					</a></li>
+				</ul>
+
+			</div>
+			<div class="col-md-8 panel panel-default">
+				<h2 th:if="${isPersonelCabinet}">Welcome to personal cabinet, <strong th:text="${user.name}"></strong>!</h2>
+				<div th:if="${operationSuccess}" class="alert alert-success">
+					<span th:utext="${operationSuccess}"></span>
+				</div>
+				<div th:if="${operationError}" class="alert alert-danger">
+					<span th:utext="${operationError}"></span>
+				</div>
+				<div class="tab-content">
+					<div id="polls-lists" class="tab-pane fade in active">
+						<div th:unless="${isPersonelCabinet}" class="panel-body">
+							<div  th:replace="fragments/poll-list-element::poll-list(${userPolls})"></div>
+						</div>
+						<div th:if="${isPersonelCabinet}" class="panel panel-default">
+						<div>
+							<div class="panel-heading text-center">
+								<a th:href="@{/poll/create}" class="btn btn-success btn-lg">
+									<span class="glyphicon glyphicon-plus"></span> Create Poll 
+								</a>
+							</div>
+							<div class="panel-body">
+								<ul class="nav nav-pills">
+									<li class="active"><a data-toggle="pill" href="#my-polls">My polls  <span th:text="${#lists.size(userPolls)}" class="badge">0</span></a></li>
+									<li><a data-toggle="pill" href="#taked-polls" >Recent taked polls <span th:text="${#lists.size(lastTakedPolls)}" class="badge">0</span></a></li>
+									<li><a data-toggle="pill" href="#communities-polls">Polls in communities <span th:text="${#lists.size(privatePolls)}" class="badge">0</span></a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="my-polls" class="tab-pane fade in active">
+										<br/>
+										<div  th:replace="fragments/poll-list-element::poll-list(${userPolls})"></div>
+									</div>
+									<div id="taked-polls" class="tab-pane fade">
+										<br/>
+										<div  th:replace="fragments/poll-list-element::poll-list(${lastTakedPolls})"></div>
+									</div>
+									<div id="communities-polls" class="tab-pane fade">
+										<br/>
+										<div  th:replace="fragments/poll-list-element::poll-list(${privatePolls})"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					
+						</div>
+					</div>
+					<div id="communties" class="tab-pane fade">
+						<div th:unless="${isPersonelCabinet}">
+							<div  th:replace="fragments/community-list-element::community-list(${userCommunities},${true})"></div>
+						</div>
+						<div th:if="${isPersonelCabinet}" class="panel panel-default">
+							<div>
+								<div class="panel-heading text-center">
+									<button data-toggle="modal" data-target="#community-form" class="btn btn-success btn-lg">
+										<span class="glyphicon glyphicon-plus"></span> Create community 
+									</button>
+								</div>
+								<div class="panel-body">
+									<ul class="nav nav-pills">
+										<li class="active"><a data-toggle="pill" href="#my-communities">My communites  <span th:text="${#lists.size(userCommunities)}" class="badge">0</span></a></li>
+										<li><a data-toggle="pill" href="#communities-invates" >Communities Invates <span th:text="${#lists.size(notAcceptedCommunities)}" class="badge">0</span></a></li>
+									</ul>
+									<div class="tab-content">
+										<div id="my-communities" class="tab-pane fade in active">
+											<br/>
+											<div  th:replace="fragments/community-list-element::community-list(${userCommunities},${true})"></div>
+										</div>
+										<div id="communities-invates" class="tab-pane fade">
+											<br/>
+											<div  th:replace="fragments/community-list-element::community-list(${notAcceptedCommunities},${false})"/>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div th:if="${isPersonelCabinet}" id="community-form" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Here you can create new community</h4>
+				</div>
+				<div class="modal-body">
+					<form id="community"  th:action="@{/community/create}">
+						<div class="form-group">
+							<label for="community-name">Coommunity name:</label>
+							<input type="text" class="form-control" id="community-name" placeholder="Enter community name" name="community-name"/>
+						</div>
+						<div class="ui-widget ui-front">
+							<label for="members-usernames">Members usernames: </label>
+							<input type="text" name="members-usernames" id="members-usernames" class="form-control"/>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" form="community">Create community</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<footer class="footer navbar navbar-default">
+		<div class="container-fluid">
+			<p class="text-muted text-center">Author : Mark Kryzhnivskyy</p>
+		</div>
+	</footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Registration</title>
+	<div th:replace="fragments/header :: header-js-css"/>
+</head>
+<body>
+	<div th:replace="fragments/header :: top-menu"/>
+	
+	<div class="container">
+		<div class="row col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 panel panel-default">
+			<form autocomplete="off" action="#" th:action="@{/registration}"
+			th:object="${user}" method="post"
+			role="form">
+			<div class="panel-heading">
+				<h3>Registration form</h3>
+			</div>
+			<div class="panel-body">
+				<div th:if="${successMessage}" class="alert alert-success">
+					<span th:utext="${successMessage}"></span>
+				</div>
+				<div class="form-group">
+					<input type="text" th:field="*{name}" placeholder="Name"
+					class="form-control" /> 
+				</div>
+				<div class="form-group">
+					<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+					class="alert alert-danger"></label>
+				</div>
+				<div class="form-group">
+					<input type="text" th:field="*{email}" placeholder="Email"
+					class="form-control" />
+				</div>
+				<div class="form-group">
+					<label
+					th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+					class="alert alert-danger"></label>
+				</div>
+				<div class="form-group">
+					<input type="password" th:field="*{password}"
+					placeholder="Password" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label
+					th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+					class="alert alert-danger"></label>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<input type="submit" class="btn btn-primary btn-block" value="Register User"/>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<a class="btn btn-default btn-block" th:href="@{/login}"> Login </a>
+					</div>
+				</div>
+
+			</div>
+		</form>
+	</div>
+</div>
+<div th:replace="fragments/footer :: footer"/>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Create poll</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<div th:replace="fragments/header :: header-js-css"/>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+	<script src="../static/js/script.js" th:src="@{/js/script.js}"></script>
+	<script src="../static/js/validators.js" th:src="@{/js/validators.js}"></script>
+</head>
+<body>
+	<div th:replace="fragments/header :: top-menu"/>
+
+	<div class="container">
+		<div class="row col-md-8 col-md-offset-2">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3>Create new Poll</h3>
+					<p>Here you can create poll with the possibility of categorization respondents based on the results of the preparatory test</p>
+					<div id="create-success" class="alert alert-success" hidden="true"></div>
+					<div id="create-error" class="alert alert-danger" hidden="true"></div>
+				</div>
+				<div class="panel-body">
+					<ul class="nav nav-tabs">
+						<li class="active"><a data-toggle="tab" href="#home">Poll Metadata</a></li>
+						<li><a data-toggle="tab" href="#menu1">Poll Questions</a></li>
+						<li><a data-toggle="tab" href="#menu2">Poll Test</a></li>
+					</ul>
+					<div id="create-poll-container" class="tab-content">
+						<div id="home" class="tab-pane fade in active">
+							<form action="javascript:myFunction(); return false;" id="poll-metadata" class="panel panel-default">
+								<div class="panel panel-body">
+									<div class="checkbox-inline">
+										<label><input type="checkbox" id="anonymous" name="anonymous" value="true"/> Anonymous Poll</label>
+									</div>
+									<div class="checkbox-inline">
+										<label><input type="checkbox" id="private_" name="private_" value="true" data-toggle="collapse" data-target="#communitys-wraper"/> Private Poll</label>
+									</div>
+									<div class="checkbox-inline">
+										<label><input type="checkbox" id="showAuthor" name="showAuthor" checked="true" value="true"/> Show Author</label>
+									</div>
+									<div id="communitys-wraper" class="form-group collapse">
+										<label for="communitysIds[]">Choose communitys :</label>
+										<select multiple="true" class="form-control" id="communitysIds[]" name="communitiesIds[]">
+											<option th:each="community : ${userCommunities}" th:value="${community.id}" th:text="${community.name}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="pollName">Poll Name:</label>
+										<input type="text" class="form-control" id="pollName" placeholder="Enter poll name" name="pollName"/>
+										<span class="glyphicon form-control-feedback"></span>
+									</div>
+									<div class="form-group">
+										<label for="pollTheme">Choose existing poll theme or  
+											<a class="" data-toggle="modal" href="#create-poll-theme-modal"><span class="primary">create new</span></a> :</label>
+											<select class="form-control" id="pollThemeId" name="pollThemeId">
+												<option th:each="theme : ${pollThemes}" th:value="${theme.id}" th:text="${theme.name}"></option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="pollHashtags">Poll Hashtags :</label>
+											<textarea class="form-control" rows="2" id="pollHashtags" name="pollHashtags"></textarea>
+										</div>
+										<div class="form-group">
+											<div class="row form-inline ">
+												<div class="form-group col-md-6">
+													<label for="from-date-wraper">From Date :</label>
+													
+													<div class='input-group date' id='from-date-wraper'>
+														<input type='text' id="fromDate" name="fromDate" class="form-control" />
+														<span class="input-group-addon">
+															<span class="glyphicon glyphicon-calendar"></span>
+														</span>
+													</div>
+												</div>
+												<div class="form-group col-md-6 text-right">
+													<label for="to-date-wraper">To Date :</label>
+													<span class="glyphicon form-control-feedback"></span>
+													<div class='input-group date' id='to-date-wraper'>
+														<input type='text' class="form-control" id="toDate" name="toDate"/>
+														<span class="input-group-addon">
+															<span class="glyphicon glyphicon-calendar"></span>
+														</span>
+													</div>
+												</div>
+											</div>
+											<div id="date-errors"></div>
+										</div>
+									</div>
+									<div class="panel-footer">
+										<button id="poll-metadata-submit" type="submit" class="btn btn-default">Submit</button>
+									</div>
+								</form>
+							</div>
+							<div id="menu1" class="tab-pane fade">
+								<form id="poll-questions" class="panel panel-default" method="POST" enctype="multipart/form-data">
+									<div name="poll-question-list-wraper" class="panel panel-body">
+										<div name="poll-question-wraper" class="panel panel-default">
+											<div class="panel-body">
+												<div class="checkbox-inline">
+													<label><input type="checkbox" id="pollQuestions[][allowOtherAnswer]" name="pollQuestions[][allowOtherAnswer]" value="true"/> Allow other answer</label>
+												</div>
+												<div class="form-group">
+													<label for="pollQuestions[][question]">Poll Question :</label>
+													<textarea required="true" class="form-control" rows="3" id="pollQuestions[][question]" name="pollQuestions[][question]" ></textarea>
+												</div>
+												<div class="imageupload panel panel-default">
+													<div class="panel-heading clearfix">
+														<h3 class="panel-title pull-left">Upload Image</h3>
+														<div class="btn-group pull-right">
+															<button type="button" class="btn btn-default active">File</button>
+															<button type="button" class="btn btn-default">URL</button>
+														</div>
+													</div>
+													<div class="file-tab panel-body">
+														<label class="btn btn-default btn-file">
+															<span>Browse</span>
+															<!-- The file is stored here. -->
+															<input id="image-file" type="file" name="pollQuestionsImages"/>
+														</label>
+														<button name="remove-image" type="button" class="btn btn-default">Remove</button>
+														<input type="hidden" name="pollQuestions[][imageName]"/>
+													</div>
+													<div class="url-tab panel-body">
+														<div class="input-group">
+															<input type="text" class="form-control" placeholder="Image URL"/>
+															<div class="input-group-btn">
+																<button type="button" class="btn btn-default">Submit</button>
+															</div>
+														</div>
+														<button type="button" class="btn btn-default">Remove</button>
+														<!-- The URL is stored here. -->
+														<input type="hidden" name="pollQuestions[][imageUrl]"/>
+													</div>
+												</div>
+												<div class="form-group">
+													<label>Answers:</label>
+												</div>
+												<ul name="poll-answers-wraper" class="well">
+													<div name="poll-answer-wraper" class="panel panel-default">
+														<div class="panel-body">
+															<li class="form-group input-group">
+																<div class="input-group-btn">
+																	<button name="poll-answer-image-change" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-picture"></i></button>
+																</div>
+																<input type="text" required="true" class="form-control" id="pollQuestionsAnswer" name="pollQuestions[][answers][][answer]" placeholder="Enter answer here"/>
+																<div class="input-group-btn">
+																	<button name="poll-answer-remove" class="btn btn-danger disabled" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+																</div>
+															</li>
+															<div name='image-select-panel' class="imageupload panel panel-default collapse">
+																<div class="panel-heading clearfix">
+																	<h3 class="panel-title pull-left">Upload Image</h3>
+																	<div class="btn-group pull-right">
+																		<button type="button" class="btn btn-default active">File</button>
+																		<button type="button" class="btn btn-default">URL</button>
+																	</div>
+																</div>
+																<div class="file-tab panel-body">
+																	<label class="btn btn-default btn-file">
+																		<span>Browse</span>
+																		<!-- The file is stored here. -->
+																		<input id="image-file" type="file" name="pollAnswersImages"/>
+																	</label>
+																	<input type="hidden" name="pollQuestions[][answers][][imageName]"/>
+																	<button type="button" class="btn btn-default">Remove</button>
+																</div>
+																<div class="url-tab panel-body">
+																	<div class="input-group">
+																		<input type="text" class="form-control" placeholder="Image URL"/>
+																		<div class="input-group-btn">
+																			<button type="button" class="btn btn-default">Submit</button>
+																		</div>
+																	</div>
+																	<button type="button" class="btn btn-default">Remove</button>
+																	<!-- The URL is stored here. -->
+																	<input type="hidden" name="pollQuestions[][answers][][imageUrl]"/>
+																</div>
+															</div>
+
+
+														</div>
+													</div>
+													<div class="form-group"></div>
+													<button id="poll-answer-add" type="button" class="btn btn-default">Add New Answer</button>	
+												</ul>
+											</div>
+											<div class="panel-footer">
+												<button name="poll-question-add" type="button" class="btn btn-default">Add New Question</button>
+												<button name="poll-question-remove" disabled="true" type="button" class="btn btn-danger"> Remove Question</button>	
+											</div>
+										</div>
+									</div>
+									<div class="panel-footer">
+										<button id="poll-questions-submit" type="submit" form="poll-questions" class="btn btn-default">Submit</button>
+									</div>
+								</form>
+							</div>
+							<div id="menu2" class="tab-pane fade">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<ul class="nav nav-tabs">
+											<li class="active"><a data-toggle="tab" href="#test-questions-tab">Test Questions</a></li>
+											<li><a data-toggle="tab" href="#test-categories-tab">Test Categories</a></li>
+											<li><a data-toggle="tab" href="#test-outcomes-tab">Test Outcomes</a></li>
+										</ul>
+
+										<div class="tab-content">
+											<div id="test-questions-tab" class="tab-pane fade in active">
+												<form id="test-questions" class="panel panel-default" method="POST" enctype="multipart/form-data">
+													<div name="test-question-list-wraper" class="panel panel-body">
+														<div name="test-question-wraper" class="panel panel-default">
+															<div class="panel-body">
+																<div class="form-group">
+																	<label for="testQuestions[][question]">test Question :</label>
+																	<textarea required="true" class="form-control" rows="3" id="testQuestions[][question]" name="testQuestions[][question]" ></textarea>
+																</div>
+																<div class="imageupload panel panel-default">
+																	<div class="panel-heading clearfix">
+																		<h3 class="panel-title pull-left">Upload Image</h3>
+																		<div class="btn-group pull-right">
+																			<button type="button" class="btn btn-default active">File</button>
+																			<button type="button" class="btn btn-default">URL</button>
+																		</div>
+																	</div>
+																	<div class="file-tab panel-body">
+																		<label class="btn btn-default btn-file">
+																			<span>Browse</span>
+																			<!-- The file is stored here. -->
+																			<input id="image-file" type="file" name="testQuestionsImages"/>
+																		</label>
+																		<button name="remove-image" type="button" class="btn btn-default">Remove</button>
+																		<input type="hidden" name="testQuestions[][imageName]"/>
+																	</div>
+																	<div class="url-tab panel-body">
+																		<div class="input-group">
+																			<input type="text" class="form-control" placeholder="Image URL"/>
+																			<div class="input-group-btn">
+																				<button type="button" class="btn btn-default">Submit</button>
+																			</div>
+																		</div>
+																		<button type="button" class="btn btn-default">Remove</button>
+																		<!-- The URL is stored here. -->
+																		<input type="hidden" name="testQuestions[][imageUrl]"/>
+																	</div>
+																</div>
+																<div class="form-group">
+																	<label>Answers:</label>
+																</div>
+																<ul name="test-answers-wraper" class="well">
+																	<div name="test-answer-wraper" required="true" class="panel panel-default">
+																		<div class="panel-body">
+																			<li class="form-group input-group">
+																				<div class="input-group-btn">
+																					<button name="test-answer-image-change" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-picture"></i></button>
+																				</div>
+																				<input required="true" type="text" class="form-control" id="testQuestionsAnswers" name="testQuestions[][answers][][answer]" placeholder="Enter answer here"/>
+																				<div class="input-group-btn">
+																					<button name="test-answer-remove" class="btn btn-danger disabled" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+																				</div>
+																			</li>
+																			<div name='image-select-panel' class="imageupload panel panel-default collapse">
+																				<div class="panel-heading clearfix">
+																					<h3 class="panel-title pull-left">Upload Image</h3>
+																					<div class="btn-group pull-right">
+																						<button type="button" class="btn btn-default active">File</button>
+																						<button type="button" class="btn btn-default">URL</button>
+																					</div>
+																				</div>
+																				<div class="file-tab panel-body">
+																					<label class="btn btn-default btn-file">
+																						<span>Browse</span>
+																						<!-- The file is stored here. -->
+																						<input id="image-file" type="file" name="testAnswersImages"/>
+																					</label>
+																					<input type="hidden" name="testQuestions[][answers][][imageName]"/>
+																					<button type="button" class="btn btn-default">Remove</button>
+																				</div>
+																				<div class="url-tab panel-body">
+																					<div class="input-group">
+																						<input type="text" class="form-control" placeholder="Image URL"/>
+																						<div class="input-group-btn">
+																							<button type="button" class="btn btn-default">Submit</button>
+																						</div>
+																					</div>
+																					<button type="button" class="btn btn-default">Remove</button>
+																					<!-- The URL is stored here. -->
+																					<input type="hidden" name="testQuestions[][answers][][imageUrl]"/>
+																				</div>
+																			</div>
+
+
+																		</div>
+																		<input type="hidden" name="testQuestions[][answers][][categoriesScores][]" value="0"/>
+																	</div>
+																	<div class="form-group"></div>
+																	<button id="test-answer-add" type="button" class="btn btn-default">Add New Answer</button>	
+																</ul>
+															</div>
+															<div class="panel-footer">
+																<button name="test-question-add" type="button" class="btn btn-default">Add New Question</button>
+																<button name="test-question-remove" disabled="true" type="button" class="btn btn-danger"> Remove Question</button>	
+															</div>
+														</div>
+													</div>
+													<div class="panel-footer">
+														<button id="test-questions-submit" type="submit" class="btn btn-default">Submit</button>
+													</div>
+												</form>
+											</div>
+											<div id="test-categories-tab" class="tab-pane fade">
+												<form id="test-categories" class="panel panel-default">
+													<div class="panel panel-body">
+														<div class="panel panel-default">
+															<div class="panel-body" name="test-categories-wraper">
+																<div name="test-category-wraper" class="form-group input-group">
+																	<input required="true" type="text" class="form-control" id="testCategories[]" name="testCategories[]" placeholder="Enter Category here"/>
+																	<div class="input-group-btn">
+																		<button name="test-category-remove" class="btn btn-danger disabled" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+																	</div>
+																</div>
+															</div>
+															<div class="panel-footer">
+																<button id="test-category-add" type="button" class="btn btn-default">Add New Category</button>	
+															</div>
+														</div>
+													</div>
+													<div class="panel-footer">
+														<button type="submit" class="btn btn-default">Submit</button>
+													</div>
+												</form>
+											</div>
+											<form id="test-outcomes-tab" class="tab-pane fade">           
+												<ol name="test-outcomes-wraper" class="list-group">
+													<li name="test-outcome-wraper" class="list-group-item">
+														<span> Question :</span>
+														<div name="test-outcome-question" id="question" class="well">
+														</div>
+														<table class="table table-condensed table-bordered table-striped small">
+															<thead>
+																<tr>
+																	<th>Answer</th>
+																	<th class="col-md-3">Category</th>
+																	<th class="col-md-2 col-sm-2 col-xs-2">Outcome</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td></td>
+																	<td></td>
+																	<td>
+																		<div class="form-group">
+																			<input type="number" value="0" class="form-control input-sm" name="testOutcomes[]" size="3" pattern="\d+"/>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</li>
+												</ol>
+											</form>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						<button id="submit-poll-forms" class="btn btn-primary" type="submit">Submit All</button>
+					</div>
+
+					<!-- Modal -->
+					<div id="create-poll-theme-modal" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+
+							<!-- Modal content-->
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Create Poll Theme Form</h4>
+								</div>
+								<div class="modal-body">
+									<form id="poll-theme">
+										<div class="form-group">
+											<div id="create-success" class="alert alert-success" hidden="true"></div>
+											<div id="create-error" class="alert alert-danger" hidden="true"></div>
+										</div>
+										<div class="form-group">
+											<label for="name">Theme name:</label>
+											<input type="text" class="form-control" name="name" id="name"/>
+										</div>
+										<div class="form-group">
+											<label for="description">Theme description:</label>
+											<input type="text" class="form-control" name="description" id="description"/>
+										</div>
+
+									</form>
+								</div>
+								<div class="modal-footer">
+									<button type="submit" form="poll-theme" class="btn btn-primary">Submit</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div th:replace="fragments/footer :: footer"/>
+
+	</body>
+	</html>

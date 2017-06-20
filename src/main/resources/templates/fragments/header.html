@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<div th:fragment="header-js-css">
+		<link rel="stylesheet" href="../../static/css/libs/bootstrap/bootstrap.min.css" th:href="@{/css/libs/bootstrap/bootstrap.min.css}"/>
+		<link rel="stylesheet" href="../../static/css/plugins/jquery-ui/jquery-ui.css" th:href="@{/css/plugins/jquery-ui/jquery-ui.css}"/>
+		<link rel="stylesheet" href="../../static/css/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" th:href="@{/css/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css}"/>
+		<link rel="stylesheet" href="../../static/css/plugins/bootstrap-imageupload/bootstrap-imageupload.css" th:href="@{/css/plugins/bootstrap-imageupload/bootstrap-imageupload.css}"/>
+		<link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}"/>
+		<script src="../../static/js/libs/jquery/jquery.min.js" th:src="@{/js/libs/jquery/jquery.min.js}"></script>
+		<script src="../../static/js/libs/bootstrap/bootstrap.min.js" th:src="@{/js/libs/bootstrap/bootstrap.min.js}"></script>
+		<script src="../../static/js/plugins/jquery-ui/jquery-ui.js" th:src="@{/js/plugins/jquery-ui/jquery-ui.js}"></script>
+		<script src="../../static/js/libs/moment/moment.min.js" th:src="@{/js/libs/moment/moment.min.js}"></script>
+		<script src="../../static/js/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js" th:src="@{/js/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+		<script src="../../static/js/plugins/serializejson/jquery.serializejson.js" th:src="@{/js/plugins/serializejson/jquery.serializejson.js}"></script>
+		<script src="../../static/js/plugins/bootstrap-imageupload/bootstrap-imageupload.min.js" th:src="@{/js/plugins/bootstrap-imageupload/bootstrap-imageupload.min.js}"></script>
+	</div>
+</head>
+<body>
+	<header th:fragment="top-menu">
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" th:href="@{/}"><img src="../../static/img/web-site-logo.png" th:src="@{http://www.auplod.com/u/paduol98b98.png}" /></a>
+				</div>
+				<ul class="nav navbar-nav">
+					
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<th:block sec:authorize="!isAuthenticated()">
+					<li><a th:href="@{/login}"><span class="glyphicon glyphicon-log-in"></span> Sign In </a></li>
+					<li><a th:href="@{/registration}"><span class="glyphicon glyphicon-user"></span> Singn Up </a></li>
+				</th:block>
+				<li sec:authorize="isAuthenticated()" class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false"><span class="glyphicon glyphicon-user"></span> <span sec:authentication="name"> </span>
+					<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a th:href="@{/user/personal-cabinet}">Personal Cabinet</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+					</ul></li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+</body>
+</html>

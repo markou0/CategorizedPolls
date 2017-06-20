@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Main page</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<div th:replace="fragments/header :: header-js-css"/>
+</head>
+<body>
+	<div th:replace="fragments/header :: top-menu"/>
+	<div class="container">
+		<div class="jumbotron">
+			<h1>Categorized Polls</h1>      
+			<p>This is the place where you can create your own polls with categorizing tests</p>
+		</div>
+		<div class="row"> 
+			<div class="col-md-5 col-md-offset-1 panel panel-default">
+				<div  class="text-center">
+					<h3 class="primary">Popular Polls</h3>
+				</div>
+				<div class="panel-body" th:replace="fragments/poll-list-element::poll-list(${popularPolls})">
+				</div>
+			</div>
+			<div class="col-md-5 panel panel-default">
+				<div  class="text-center">
+					<h3 class="primary">Newest Polls</h3>
+				</div>
+				<div class="panel-body" th:replace="fragments/poll-list-element::poll-list(${newestPolls})">
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>

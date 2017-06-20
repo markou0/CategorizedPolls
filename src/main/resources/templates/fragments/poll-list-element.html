@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Personal Cabinet</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<link rel="stylesheet" href="../../static/css/libs/bootstrap/bootstrap.min.css" th:href="@{/css/libs/bootstrap/bootstrap.min.css}"/>
+	<link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}"/>
+	<script src="../../static/js/libs/jquery/jquery.min.js" th:src="@{/js/libs/jquery/jquery.min.js}"></script>
+	<script src="../../static/js/libs/bootstrap/bootstrap.min.js" th:src="@{/js/libs/bootstrap/bootstrap.min.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<div th:fragment="poll-list (pollList)">
+			<div class="row">
+				<div th:unless="${pollList} and ${#lists.size(pollList)} gt 0" class="alert alert-info">
+					<strong>List is empty</strong>!
+				</div>
+			</div>
+
+			<th:block th:each="poll : ${pollList}">
+			<div class="panel panel-primary" >
+				<h4  class="panel-heading text-center" style="margin-top: 0">
+					<span class="pull-left label label-success">Author : <a th:href="(${poll.showAuthor})?@{/user/{username}(username=${poll.user.name})}:'#'">
+						<strong th:text="(${poll.showAuthor})?(${poll.user.name}):'hidden'"></strong></a></span>
+						<span class="label label-success">Voted : <strong th:text="${poll.usersVoted}">0</strong></span>
+						<span class="pull-right label label-success">Created : <strong th:text="${#dates.format(poll.date, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+					</h4>
+					<div class="panel-body" style="padding-top: 0">
+						<div th:include="fragments/poll-info::poll-info(${poll})">
+
+						</div>
+					</div>
+
+					<div th:if="${poll.toTimestamp}" class="panel-footer text-center" style="padding: 0">
+						<h5>
+							<span class="label label-info">from date : <strong th:text="${#dates.format(poll.fromTimestamp, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+							<span class="label label-info">to date : <strong th:text="${#dates.format(poll.toTimestamp, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+
+						</h5>
+					</div>
+				</div>
+			</th:block>
+
+		</div>
+
+		<div th:fragment="poll-list-half (pollList, isEven)">
+			<div class="row">
+				<div th:unless="${pollList} and ${#lists.size(pollList)} gt 0" class="alert alert-info">
+					<strong>List is empty</strong>!
+				</div>
+			</div>
+
+			<th:block th:each="poll : ${pollList}">
+			
+			<div th:if="(${isEven})?${pollStat.even}:${pollStat.odd}" class="panel panel-primary" >
+				<h4  class="panel-heading text-center" style="margin-top: 0">
+					<span class="pull-left label label-success">Author : <a th:href="(${poll.showAuthor})?@{/user/{username}(username=${poll.user.name})}:'#'">
+						<strong th:text="(${poll.showAuthor})?(${poll.user.name}):'hidden'"></strong></a></span>
+						<span class="label label-success">Voted : <strong th:text="${poll.usersVoted}">0</strong></span>
+						<span class="pull-right label label-success">Created : <strong th:text="${#dates.format(poll.date, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+					</h4>
+					<div class="panel-body" style="padding-top: 0">
+						<div th:include="fragments/poll-info::poll-info(${poll})">
+
+						</div>
+					</div>
+
+					<div th:if="${poll.toTimestamp}" class="panel-footer text-center" style="padding: 0">
+						<h5>
+							<span class="label label-info">from date : <strong th:text="${#dates.format(poll.fromTimestamp, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+							<span class="label label-info">to date : <strong th:text="${#dates.format(poll.toTimestamp, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+
+						</h5>
+					</div>
+				</div>
+			</th:block>
+
+		</div>
+
+		<div th:fragment="poll-2-col-list(polls)" class="row">
+			<div class="col-md-6 col-sm-6">
+				<div th:replace="fragments/poll-list-element::poll-list-half (${polls}, ${true})"></div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div th:replace="fragments/poll-list-element::poll-list-half (${polls}, ${false})"></div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

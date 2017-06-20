@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Personal Cabinet</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<link rel="stylesheet" href="../static/css/libs/bootstrap/bootstrap.min.css" th:href="@{/css/libs/bootstrap/bootstrap.min.css}"/>
+	<link rel="stylesheet" href="../static/css/plugins/jquery-ui/jquery-ui.css" th:href="@{/css/plugins/jquery-ui/jquery-ui.css}"/>
+	<link rel="stylesheet" href="../static/css/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" th:href="@{/css/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css}"/>
+	<link rel="stylesheet" href="../static/css/plugins/bootstrap-imageupload/bootstrap-imageupload.css" th:href="@{/css/plugins/bootstrap-imageupload/bootstrap-imageupload.css}"/>
+	<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+	<script src="../static/js/libs/jquery/jquery.min.js" th:src="@{/js/libs/jquery/jquery.min.js}"></script>
+	<script src="../static/js/libs/bootstrap/bootstrap.min.js" th:src="@{/js/libs/bootstrap/bootstrap.min.js}"></script>
+	<script src="../static/js/plugins/jquery-ui/jquery-ui.js" th:src="@{/js/plugins/jquery-ui/jquery-ui.js}"></script>
+	<script src="../static/js/libs/moment/moment.min.js" th:src="@{/js/libs/moment/moment.min.js}"></script>
+	<script src="../static/js/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js" th:src="@{/js/plugins/eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+	<script src="../static/js/plugins/serializejson/jquery.serializejson.js" th:src="@{/js/plugins/serializejson/jquery.serializejson.js}"></script>
+	<script src="../static/js/plugins/bootstrap-imageupload/bootstrap-imageupload.min.js" th:src="@{/js/plugins/bootstrap-imageupload/bootstrap-imageupload.min.js}"></script>
+	<script src="../static/js/autocomplete.js" th:src="@{/js/autocomplete.js}"></script>
+	<div th:replace="fragments/header :: header-js-css"/>
+</head>
+<body>
+	<div th:replace="fragments/header :: top-menu"/>
+	<div class="container">
+		<div th:fragment="community-list (communityList, accepted)">
+			<div class="row">
+				<div th:unless="${communityList} and ${#lists.size(communityList)} gt 0" class="alert alert-info">
+					<strong>List is empty</strong>!
+				</div>
+			</div>
+			<th:block th:each="community : ${communityList}">
+			<div class="panel panel-info" >
+				<h5  class="panel-heading text-center" style="margin-top: 0">
+					<div class="panel-title">
+						<span class="pull-left label label-primary">Author : <strong th:text="${community.user.name}"></strong></span>
+						<span th:if="${community.members}" class="label label-primary">Members : <strong th:text="${#lists.size(community.members)}">0</strong></span>
+						<span class="pull-right label label-primary">Created :  <strong th:text="${#dates.format(community.created, 'dd/MMM/yyyy HH:mm')}"></strong></span>
+					</div>
+				</h5>
+				<div class="panel-body" style="padding-top: 0">
+					<h4 th:text="${community.name}"></h4>
+					<h5>Memebers :</h5>
+					<p>
+						<span th:each="member : ${community.members}" th:text="${member.name}" class="label label-default"></span>
+					</p> 
+				</div>
+
+				<div class="panel-footer text-center">
+					<p>
+						<a th:unless="${accepted}" class="btn btn-success" th:href="@{/community/{communityId}/accept(communityId=${community.id})}">Accept</a>
+						<div th:if="${accepted}">
+							<div th:switch="${#strings.contains(#httpServletRequest.requestURI,'personal-cabinet') and community.user == user}">
+								<a th:case="true" class="btn btn-danger" th:href="@{/community/{communityId}/remove(communityId=${community.id})}">Remove Community</a>
+								<a th:case="false" class="btn btn-warning" th:href="@{/community/{communityId}/leave(communityId=${community.id})}">Leave</a>
+							</div>
+						</div>
+					</p>
+				</div>
+			</div>
+		</th:block>
+
+	</div>
+</div>
+<footer class="footer navbar navbar-default">
+	<div class="container-fluid">
+		<p class="text-muted text-center">Author : Mark Kryzhnivskyy</p>
+	</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Poll list</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<div th:replace="fragments/header :: header-js-css"/>
+</head>
+<body>
+	<div th:replace="fragments/header :: top-menu"/>
+	<div class="container">
+		<div class="text-center">
+			<h3 class="primary">List of Polls by 
+				<th:block th:each="uri : ${#strings.arraySplit(#httpServletRequest.requestURI,'/')}">
+				<span th:if="${uriStat.index}==1" th:text="${uri}+' : '" >
+				</span>
+				<strong th:if="${uriStat.last}" th:text="${#strings.replace(uri,'%23','#')}"></strong>
+			</th:block>
+		</h3>
+	</div>
+	<div th:replace="fragments/poll-list-element::poll-2-col-list(${polls})">
+		
+	</div>
+
+</div>
+<footer th:replace="fragments/footer::footer"></footer>
+</body>
+</html>
